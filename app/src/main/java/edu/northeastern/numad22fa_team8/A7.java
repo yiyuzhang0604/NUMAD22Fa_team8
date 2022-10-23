@@ -2,13 +2,18 @@ package edu.northeastern.numad22fa_team8;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,18 +25,23 @@ public class A7 extends AppCompatActivity {
     private EditText catName, zipcode, descrption;
     private Button postButton;
     private ProgressBar progressBar;
-    private TextView response;
-
+    private RecyclerView responseView;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<PostModel> postCardList;
+    private PostAdapter postAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a7);
-        catName = findViewById(R.id.idEdtName);
-        zipcode = findViewById(R.id.idEditZipcode);
-        descrption = findViewById(R.id.idEdtDescription);
-        progressBar = findViewById(R.id.idLoadingPB);
-        response = findViewById(R.id.idTVResponse);
-        postButton = findViewById(R.id.idBtnPost);
+        catName = findViewById(R.id.cat_name);
+        zipcode = findViewById(R.id.zipcode);
+        descrption = findViewById(R.id.description);
+        progressBar = findViewById(R.id.progressBar);
+        postButton = findViewById(R.id.button2);
+        progressBar.setVisibility(View.INVISIBLE);
+        postCardList = new ArrayList<>();
+
+        createResponseView();
 
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +55,49 @@ public class A7 extends AppCompatActivity {
 
             }
         });
+        fetchPost();
     }
+
+    private void createResponseView() {
+        // create recycler view
+        layoutManager = new LinearLayoutManager(this);
+        responseView = findViewById(R.id.response_view);
+        responseView.setHasFixedSize(true);
+        postAdapter = new PostAdapter(postCardList);
+        responseView.setAdapter(postAdapter);
+        responseView.setLayoutManager(layoutManager);
+    }
+
+    private void fetchPost() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://reqres.in/api/")
+                // as we are sending data in json format so
+                // we have to add Gson converter factory
+                .addConverterFactory(GsonConverterFactory.create())
+                // at last we are building our retrofit builder.
+                .build();
+        // below line is to create an instance for our retrofit api class.
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+        retrofitAPI.getPostList().enqueue(new Callback<List<PostModel>>() {
+            @Override
+            public void onResponse(Call<List<PostModel>> call, Response<List<PostModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    postCardList.addAll(response.body());
+                    postAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PostModel>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(A7.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
 
     private void postData(String catName, String zipcode, String description) {
         progressBar.setVisibility(View.VISIBLE);
@@ -58,45 +110,21 @@ public class A7 extends AppCompatActivity {
                 .build();
         // below line is to create an instance for our retrofit api class.
         RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
-
-        // passing data from our text fields to our modal class.
-        PostModel modal = new PostModel(catName, zipcode, description);
-
-        // calling a method to create a post and passing our modal class.
-        Call<PostModel> call = retrofitAPI.createPost(modal);
-
-        // on below line we are executing our method.
+        PostModel model = new PostModel(catName, zipcode, description);
+        Call<PostModel> call = retrofitAPI.createPost(model);
         call.enqueue(new Callback<PostModel>() {
             @Override
             public void onResponse(Call<PostModel> call, Response<PostModel> apiresponse) {
-                // this method is called when we get response from our api.
-                Toast.makeText(A7.this, "Data added to API", Toast.LENGTH_SHORT).show();
-
-                // below line is for hiding our progress bar.
                 progressBar.setVisibility(View.GONE);
-
-                // on below line we are setting empty text
-                // to our both edit text.
-                //jobEdt.setText("");
-                //nameEdt.setText("");
-
-                // we are getting response from our body
-                // and passing it to our modal class.
                 PostModel responseFromAPI = apiresponse.body();
-
-                // on below line we are getting our data from modal class and adding it to our string.
-                String responseString = "Response Code : " + apiresponse.code() + "\nName : " + responseFromAPI.getCatName() + "\n" + "Zipcode : " + responseFromAPI.getZipcode() + "\n" + "Description : " + responseFromAPI.getDescription() ;
-
-                // below line we are setting our
-                // string to our text view.
-                response.setText(responseString);
+                postCardList.add(responseFromAPI);
+                postAdapter = new PostAdapter(postCardList);
+                responseView.setAdapter(postAdapter);
             }
 
             @Override
             public void onFailure(Call<PostModel> call, Throwable t) {
-                // setting text to our text view when
-                // we get error response from API.
-                response.setText("Error found is : " + t.getMessage());
+                Toast.makeText(A7.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
