@@ -1,6 +1,8 @@
 package edu.northeastern.numad22fa_team8;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -129,4 +131,17 @@ public class A7 extends AppCompatActivity {
         });
 
 }
+
+    @Override
+    public void onBackPressed() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setMessage("Are you sure you want to leave the app?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                finish();
+            });
+            builder.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+    }
 }
