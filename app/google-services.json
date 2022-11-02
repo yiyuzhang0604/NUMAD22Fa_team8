@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "74611760975",
+    "firebase_url": "https://madfa22-team8-default-rtdb.firebaseio.com",
+    "project_id": "madfa22-team8",
+    "storage_bucket": "madfa22-team8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74611760975:android:32aea77abd30e2a80e2f3a",
+        "android_client_info": {
+          "package_name": "edu.northeastern.numad22fa_team8"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74611760975-e6s9ndqqmmt1du9db5kf069i07tgvocu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKl7WKMTFEpQHfjbAs6tZJr_X-EcH_Qik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74611760975-e6s9ndqqmmt1du9db5kf069i07tgvocu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
