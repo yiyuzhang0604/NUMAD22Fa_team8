@@ -5,10 +5,13 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.database.FirebaseDatabase;
 import android.provider.Settings;
 
+
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String username;
     private String deviceId;
     private DatabaseReference dbRef;
+
 
     @Override
     public void onCreate() {
@@ -18,4 +21,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
     }
+
+
 }
