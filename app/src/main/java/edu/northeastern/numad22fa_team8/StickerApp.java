@@ -3,6 +3,7 @@ package edu.northeastern.numad22fa_team8;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,7 +46,7 @@ public class StickerApp extends AppCompatActivity {
 
     private static String SERVER_KEY;
     DatabaseReference dbRef;
-    Button btn_register, btn_send_sticker;
+    Button btn_register, btn_send_sticker, btnHistory;
     EditText enterUserName, enterFriendName;
     private ImageView imageView1, imageView2, imageView3;
     private static final String CHANNEL_ID = "CHANNEL_ID";
@@ -64,6 +65,7 @@ public class StickerApp extends AppCompatActivity {
         dbRef = FirebaseDatabase.getInstance().getReference();
         btn_register = findViewById(R.id.buttonUserRegister);
         btn_send_sticker = findViewById(R.id.buttonSendSticker);
+        btnHistory = findViewById(R.id.buttonHistory);
         enterUserName = findViewById(R.id.editTextEnterUserName);
         enterFriendName = findViewById(R.id.editTextEnterFriendName);
         // get server key from google-service.json
@@ -86,7 +88,17 @@ public class StickerApp extends AppCompatActivity {
             }
         });
 
-
+        // click History Button to get send and receive history
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openHistory();
+            }
+        });
+    }
+    private void openHistory() {
+        Intent intent = new Intent(this, History.class);
+        startActivity(intent);
     }
 
     private void showStickersAvailable() {

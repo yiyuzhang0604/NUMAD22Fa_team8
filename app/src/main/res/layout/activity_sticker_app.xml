@@ -10,79 +10,94 @@
         android:id="@+id/editTextEnterUserName"
         android:layout_width="243dp"
         android:layout_height="63dp"
-        android:layout_marginTop="40dp"
         android:hint="Enter your username here"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUserRegister"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.434"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
+
 
     <Button
         android:id="@+id/buttonUserRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="SIGN IN"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEnterFriendName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.436"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEnterUserName" />
-
 
     <EditText
         android:id="@+id/editTextEnterFriendName"
         android:layout_width="243dp"
         android:layout_height="63dp"
         android:hint="Enter your friend's username here"
-        app:layout_constraintBottom_toTopOf="@+id/image1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSendSticker"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.434"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonUserRegister"
-        app:layout_constraintVertical_bias="0.202" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonUserRegister" />
 
     <Button
         android:id="@+id/buttonSendSticker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send Sticker"
-        app:layout_constraintBottom_toTopOf="@+id/image1"
+        app:layout_constraintBottom_toTopOf="@+id/image3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.434"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEnterFriendName"
-        app:layout_constraintVertical_bias="0.404" />
-
-    <ImageView
-        android:id="@+id/image1"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="236dp"
-        android:src="@drawable/joey"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEnterFriendName" />
 
     <ImageView
         android:id="@+id/image2"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="52dp"
         android:src="@drawable/rick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/image3"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSendSticker" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.758" />
 
     <ImageView
         android:id="@+id/image3"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="52dp"
         android:src="@drawable/simpsons"
+        app:layout_constraintBottom_toTopOf="@+id/buttonHistory"
+        app:layout_constraintEnd_toStartOf="@+id/image2"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/image1"
         app:layout_constraintTop_toBottomOf="@+id/buttonSendSticker" />
+
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/joey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/image3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.758" />
+
+    <Button
+        android:id="@+id/buttonHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
