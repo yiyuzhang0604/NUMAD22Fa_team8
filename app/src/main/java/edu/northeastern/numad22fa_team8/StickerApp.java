@@ -93,7 +93,6 @@ public class StickerApp extends AppCompatActivity {
             }
         });
     }
-
     private void openHistory() {
         Intent intent = new Intent(this, History.class);
         startActivity(intent);
