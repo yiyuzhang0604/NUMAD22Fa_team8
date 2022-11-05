@@ -2,16 +2,20 @@ package edu.northeastern.numad22fa_team8;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,7 +27,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +46,6 @@ public class StickerApp extends AppCompatActivity {
     DatabaseReference dbRef;
     Button btn_register, btn_send_sticker;
     EditText enterUserName, enterFriendName;
-    private FirebaseAuth mAuth;
     private ImageView imageView1, imageView2, imageView3;
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String CHANNEL_NAME = "CHANNEL_NAME";
@@ -56,50 +64,33 @@ public class StickerApp extends AppCompatActivity {
         btn_send_sticker = findViewById(R.id.buttonSendSticker);
         enterUserName = findViewById(R.id.editTextEnterUserName);
         enterFriendName = findViewById(R.id.editTextEnterFriendName);
-        mAuth = FirebaseAuth.getInstance();
         // get server key from google-service.json
         SERVER_KEY = "key=AIzaSyCKl7WKMTFEpQHfjbAs6tZJr_X-EcH_Qik";
+        userRegister();
         createNotificationChannel();
-        dbRef.child("users").get().addOnCompleteListener((task) -> {
-            HashMap<String, HashMap<String, String>> tempMap = (HashMap) task.getResult().getValue();
-            List<String> userNames = new ArrayList<>();
 
-            // populate user id and name
-            for (String userId : tempMap.keySet()) {
-                String userName = tempMap.get(userId).get("username");
-                if (userName == null || userName.equals(enterUserName.toString())) {
-                    continue;
+
+        btn_send_sticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateFriendsUsernameInDatabase();
+                if (!userNameToUserIdMap.containsKey(enterFriendName.getText().toString())) {
+                    Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
+                    postToastMessage("Hello!", getApplicationContext());
                 }
-                userNames.add(userName);
-                userIdToUserNameMap.put(userId, userName);
-                userNameToUserIdMap.put(userName, userId);
             }
         });
 
 
+    }
 
-        dbRef.setValue("here there").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(getApplicationContext(), "Succesfully connected to Database", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Fail to connect to Database", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
-            }
-        });
-
+    private void userRegister() {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dbRef = FirebaseDatabase.getInstance().getReference();
                 String inputUserName = enterUserName.getText().toString();
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 if (inputUserName == null) {
@@ -121,7 +112,7 @@ public class StickerApp extends AppCompatActivity {
                                 // create user
                                 User user = new User(inputUserName, device_id, token);
                                 // add to db
-                                dbRef.child("users").child(device_id).setValue(user);
+                                dbRef.child("users").child(inputUserName).setValue(user);
                             }
                         });
                 Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
@@ -129,14 +120,24 @@ public class StickerApp extends AppCompatActivity {
             }
         });
 
-        btn_send_sticker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!userNameToUserIdMap.containsKey(enterFriendName.toString())) {
-                    Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void validateFriendsUsernameInDatabase() {
+        dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef.child("users").get().addOnCompleteListener((task) -> {
+            HashMap<String, HashMap<String, String>> tempMap = (HashMap) task.getResult().getValue();
+            System.out.println("usermap: " + tempMap.toString());
+            Toast.makeText(StickerApp.this, "map" + tempMap.toString(), Toast.LENGTH_SHORT).show();
+            List<String> userNames = new ArrayList<>();
+            for (String userId : tempMap.keySet()) {
+                String userName = tempMap.get(userId).get("username");
+                System.out.println("userName:" + userName);
+                if (userName == null || userName.equals(enterUserName.toString())) {
+                    continue;
                 }
+                userNames.add(userName);
+                userIdToUserNameMap.put(userId, userName);
+                userNameToUserIdMap.put(userName, userId);
             }
         });
     }
@@ -149,5 +150,16 @@ public class StickerApp extends AppCompatActivity {
         channel.setDescription(description);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
+    }
+
+    private static void postToastMessage(final String message, final Context context){
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
