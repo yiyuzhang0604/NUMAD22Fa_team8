@@ -20,6 +20,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.provider.Settings;
 import android.view.View;
@@ -52,6 +53,7 @@ public class StickerApp extends AppCompatActivity {
     private static final String CHANNEL_DESCRIPTION = "CHANNEL_DESCRIPTION";
     private Map<String, String> userNameToUserIdMap = new HashMap<>();
     private Map<String, String> userIdToUserNameMap = new HashMap<>();
+    private Map<ImageView, Boolean> imageSelectedMap = new HashMap<>();
 
 
 
@@ -68,6 +70,7 @@ public class StickerApp extends AppCompatActivity {
         SERVER_KEY = "key=AIzaSyCKl7WKMTFEpQHfjbAs6tZJr_X-EcH_Qik";
         userRegister();
         createNotificationChannel();
+        showStickersAvailable();
 
 
         btn_send_sticker.setOnClickListener(new View.OnClickListener() {
@@ -78,11 +81,48 @@ public class StickerApp extends AppCompatActivity {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
-                    postToastMessage("Hello!", getApplicationContext());
+                    postToastMessage("Received sticker from " + enterUserName.getText().toString(), getApplicationContext());
                 }
             }
         });
 
+
+    }
+
+    private void showStickersAvailable() {
+        imageView1 = findViewById(R.id.image1);
+        imageView2 = findViewById(R.id.image2);
+        imageView3 = findViewById(R.id.image3);
+        // make it clickable
+        imageView1.setClickable(true);
+        imageView2.setClickable(true);
+        imageView3.setClickable(true);
+        // record in map
+        imageSelectedMap.put(imageView1, false);
+        imageSelectedMap.put(imageView2, false);
+        imageSelectedMap.put(imageView3, false);
+        // add onclick listencer
+        imageView1.setOnClickListener((view) -> imageOnClickListener(view));
+        imageView2.setOnClickListener((view) -> imageOnClickListener(view));
+        imageView3.setOnClickListener((view) -> imageOnClickListener(view));
+
+    }
+
+    private void imageOnClickListener(View view) {
+        if (imageSelectedMap.get(view) == true) {
+            imageSelectedMap.put((ImageView) view, false);
+            ((ImageView) view).setColorFilter(null);
+        } else {
+            // users are only allowed to select 1 sticker
+            for (ImageView img: imageSelectedMap.keySet()) {
+                imageSelectedMap.put(img, false);
+            }
+            ((ImageView) view).setColorFilter(ContextCompat
+                            .getColor(this.getApplicationContext()
+                                    , R.color.purple_200)
+                    , android.graphics.PorterDuff.Mode.MULTIPLY);
+            imageSelectedMap.put((ImageView) view, true);
+        }
 
     }
 
@@ -126,12 +166,11 @@ public class StickerApp extends AppCompatActivity {
         dbRef = FirebaseDatabase.getInstance().getReference();
         dbRef.child("users").get().addOnCompleteListener((task) -> {
             HashMap<String, HashMap<String, String>> tempMap = (HashMap) task.getResult().getValue();
-            System.out.println("usermap: " + tempMap.toString());
-            Toast.makeText(StickerApp.this, "map" + tempMap.toString(), Toast.LENGTH_SHORT).show();
+            //System.out.println("usermap: " + tempMap.toString());
+            //Toast.makeText(StickerApp.this, "map" + tempMap.toString(), Toast.LENGTH_SHORT).show();
             List<String> userNames = new ArrayList<>();
             for (String userId : tempMap.keySet()) {
                 String userName = tempMap.get(userId).get("username");
-                System.out.println("userName:" + userName);
                 if (userName == null || userName.equals(enterUserName.toString())) {
                     continue;
                 }
