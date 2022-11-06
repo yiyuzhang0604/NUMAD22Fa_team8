@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -245,14 +246,22 @@ public class StickerApp extends AppCompatActivity {
         }
     }
 
-    private static void postToastMessage(final String message, final Context context){
+    private void postToastMessage(final String message, final Context context){
         Handler handler = new Handler(Looper.getMainLooper());
-
         handler.post(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String getStickerid() {
+        for (int imgId: imageIdSelectedMap.keySet()) {
+            if (imageIdSelectedMap.get(imgId) == true) {
+                return String.valueOf(imgId);
+            }
+        }
+        return "0";
     }
 }
