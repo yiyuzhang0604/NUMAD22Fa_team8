@@ -11,21 +11,13 @@ android {
 //            keyAlias 'key0'
 //            keyPassword '123456'
 //        }
-<<<<<<< Updated upstream
-        CS5520 {
-            storeFile file('/Users/yanghe/Documents/AndriodStudioKeystore/CS5520keystore')
-            storePassword '123456'
-            keyAlias 'key0'
-            keyPassword '123456'
-        }
-=======
 //        CS5520 {
 //            storeFile file('/Users/yuan/Documents/AndriodStudioKeystore/CS5520keystore')
 //            storePassword '123456'
 //            keyAlias 'key0'
 //            keyPassword '123456'
 //        }
->>>>>>> Stashed changes
+
 //        Group {
 //            storeFile file('C:\\Users\\Gloria\\Desktop\\NEU\\5520KeyStore\\5520GroupKeyStore.jks')
 //            storePassword '123456'

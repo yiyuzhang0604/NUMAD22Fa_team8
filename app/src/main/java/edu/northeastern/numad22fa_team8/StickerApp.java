@@ -250,7 +250,7 @@ public class StickerApp extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-        
+
         Intent intent = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
         intent.putExtra("sender", enterSenderName.getText().toString());
 
@@ -270,7 +270,7 @@ public class StickerApp extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(StickerApp.this);
 
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
->>>>>>> Stashed changes
+
     }
 
     public void createNotificationChannel() {
