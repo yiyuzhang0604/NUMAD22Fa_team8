@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,9 +84,18 @@ public class StickerApp extends AppCompatActivity {
                 if (!userNameToUserIdMap.containsKey(enterFriendName.getText().toString())) {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
+                    // send Image
                     Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
-
+                    // get Drawable Id
                     int selectedImageId = (int) selectedImage.getTag();
+                    Date timestamp = new Date();
+                    StickerMessage msg = new StickerMessage(enterUserName.getText().toString(), enterFriendName.getText().toString(), selectedImageId, timestamp);
+                    // sendHistory
+                    DatabaseReference sendHistory = dbRef.child("users").child(enterUserName.getText().toString()).child("sendHistory");
+                    sendHistory.push().setValue(msg);
+                    // receiveHistory
+                    DatabaseReference receiveHistory = dbRef.child("users").child(enterFriendName.getText().toString()).child("receiveHistory");
+                    receiveHistory.push().setValue(msg);
                     postToastMessage("Sent sticker from " + enterUserName.getText().toString() + " to " + enterFriendName.getText().toString() + ", stickerId: " + selectedImageId, getApplicationContext());
                 }
             }
@@ -99,6 +109,7 @@ public class StickerApp extends AppCompatActivity {
             }
         });
     }
+
     private void openHistory() {
         Intent intent = new Intent(this, History.class);
         startActivity(intent);
@@ -116,33 +127,14 @@ public class StickerApp extends AppCompatActivity {
         imageView1.setOnClickListener((view) -> imageOnClickListener(view));
         imageView2.setOnClickListener((view) -> imageOnClickListener(view));
         imageView3.setOnClickListener((view) -> imageOnClickListener(view));
-        // for sending sticker
+        // works for sending sticker message and retrieving history
         imageView1.setTag(R.drawable.joey);
         imageView2.setTag(R.drawable.rick);
         imageView3.setTag(R.drawable.simpsons);
     }
 
-    private int getDrawableId(ImageView iv) {
-        return (Integer) iv.getTag();
-    }
-
     private void imageOnClickListener(View view) {
         if (selectedImage != null) selectedImage.setColorFilter(null);
-//        if (imageSelectedMap.get(view) == true) {
-//            imageSelectedMap.put((ImageView) view, false);
-//            ((ImageView) view).setColorFilter(null);
-//        } else {
-//            // users are only allowed to select 1 sticker
-//            for (ImageView img: imageSelectedMap.keySet()) {
-//                imageSelectedMap.put(img, false);
-//            }
-//            ((ImageView) view).setColorFilter(ContextCompat
-//                            .getColor(this.getApplicationContext()
-//                                    , R.color.purple_200)
-//                    , android.graphics.PorterDuff.Mode.MULTIPLY);
-//            imageSelectedMap.put((ImageView) view, true);
-//        }
-
         selectedImage = (ImageView) view;
         selectedImage.setColorFilter(ContextCompat
                             .getColor(this.getApplicationContext()

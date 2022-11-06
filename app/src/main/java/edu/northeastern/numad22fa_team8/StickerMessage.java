@@ -5,10 +5,10 @@ import java.util.Date;
 public class StickerMessage implements Comparable<StickerMessage> {
     private final String sender;
     private final String receiver;
-    private final String stickerId;
+    private final int stickerId;
     private final Date timestamp;
 
-    public StickerMessage(String sender, String receiver, String stickerId, Date timestamp) {
+    public StickerMessage(String sender, String receiver, int stickerId, Date timestamp) {
         this.sender = sender;
         this.receiver = receiver;
         this.stickerId = stickerId;
@@ -23,7 +23,7 @@ public class StickerMessage implements Comparable<StickerMessage> {
         return receiver;
     }
 
-    public String getStickerId() {
+    public int getStickerId() {
         return stickerId;
     }
 
