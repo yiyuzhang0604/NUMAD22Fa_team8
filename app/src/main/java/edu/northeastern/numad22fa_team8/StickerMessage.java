@@ -3,10 +3,12 @@ package edu.northeastern.numad22fa_team8;
 import java.util.Date;
 
 public class StickerMessage implements Comparable<StickerMessage> {
-    private final String sender;
-    private final String receiver;
-    private final int stickerId;
-    private final Date timestamp;
+    private String sender;
+    private String receiver;
+    private int stickerId;
+    private Date timestamp;
+
+    public StickerMessage() {}
 
     public StickerMessage(String sender, String receiver, int stickerId, Date timestamp) {
         this.sender = sender;
@@ -29,6 +31,22 @@ public class StickerMessage implements Comparable<StickerMessage> {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public void setStickerId(int stickerId) {
+        this.stickerId = stickerId;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override

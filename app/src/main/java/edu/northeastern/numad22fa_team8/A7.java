@@ -64,7 +64,7 @@ public class A7 extends AppCompatActivity {
         // create recycler view
         layoutManager = new LinearLayoutManager(this);
         responseView = findViewById(R.id.response_view);
-        responseView.setHasFixedSize(true);
+//        responseView.setHasFixedSize(true);
         postAdapter = new PostAdapter(postCardList);
         responseView.setAdapter(postAdapter);
         responseView.setLayoutManager(layoutManager);
