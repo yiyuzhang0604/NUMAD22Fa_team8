@@ -255,13 +255,4 @@ public class StickerApp extends AppCompatActivity {
             }
         });
     }
-
-    private String getStickerid() {
-        for (int imgId: imageIdSelectedMap.keySet()) {
-            if (imageIdSelectedMap.get(imgId) == true) {
-                return String.valueOf(imgId);
-            }
-        }
-        return "0";
-    }
 }
