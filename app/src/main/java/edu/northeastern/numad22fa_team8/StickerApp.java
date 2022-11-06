@@ -21,6 +21,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.provider.Settings;
@@ -57,7 +59,6 @@ public class StickerApp extends AppCompatActivity {
     private Map<ImageView, Boolean> imageSelectedMap = new HashMap<>();
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +73,8 @@ public class StickerApp extends AppCompatActivity {
         SERVER_KEY = "key=AIzaSyCKl7WKMTFEpQHfjbAs6tZJr_X-EcH_Qik";
         userRegister();
         createNotificationChannel();
+        sendNotification();
         showStickersAvailable();
-
 
         btn_send_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,14 +195,32 @@ public class StickerApp extends AppCompatActivity {
         });
     }
 
+    public void sendNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Received New Message")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentText(enterUserName.getText().toString() + "send you a message");
+
+        createNotificationChannel();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+    }
+
     public void createNotificationChannel() {
         CharSequence name = CHANNEL_NAME;
         String description = CHANNEL_DESCRIPTION;
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setDescription(description);
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private static void postToastMessage(final String message, final Context context){
