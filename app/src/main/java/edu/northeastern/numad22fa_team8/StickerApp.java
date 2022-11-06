@@ -41,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +56,7 @@ public class StickerApp extends AppCompatActivity {
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String CHANNEL_NAME = "CHANNEL_NAME";
     private static final String CHANNEL_DESCRIPTION = "CHANNEL_DESCRIPTION";
-    private Map<String, String> userNameToUserIdMap = new HashMap<>();
-    private Map<String, String> userIdToUserNameMap = new HashMap<>();
+    private static HashSet<String> registeredUsers = new HashSet<>();
     private ImageView selectedImage = null;
 
 
@@ -77,11 +77,12 @@ public class StickerApp extends AppCompatActivity {
 //        sendNotification();
         showStickersAvailable();
 
+
         btn_send_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 validateFriendsUsernameInDatabase();
-                if (!userNameToUserIdMap.containsKey(enterFriendName.getText().toString())) {
+                if (!registeredUsers.contains(enterFriendName.getText().toString())) {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
                     // send Image
@@ -182,17 +183,13 @@ public class StickerApp extends AppCompatActivity {
         dbRef = FirebaseDatabase.getInstance().getReference();
         dbRef.child("users").get().addOnCompleteListener((task) -> {
             HashMap<String, HashMap<String, String>> tempMap = (HashMap) task.getResult().getValue();
-            //System.out.println("usermap: " + tempMap.toString());
-            //Toast.makeText(StickerApp.this, "map" + tempMap.toString(), Toast.LENGTH_SHORT).show();
-            List<String> userNames = new ArrayList<>();
+//            List<String> userNames = new ArrayList<>();
             for (String userId : tempMap.keySet()) {
                 String userName = tempMap.get(userId).get("username");
-                if (userName == null || userName.equals(enterUserName.toString())) {
-                    continue;
-                }
-                userNames.add(userName);
-                userIdToUserNameMap.put(userId, userName);
-                userNameToUserIdMap.put(userName, userId);
+                registeredUsers.add(userName);
+//                userNames.add(userName);
+//                userIdToUserNameMap.put(userId, userName);
+//                userNameToUserIdMap.put(userName, userId);
             }
         });
     }
