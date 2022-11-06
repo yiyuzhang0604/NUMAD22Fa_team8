@@ -19,25 +19,14 @@ public class StickerFactory {
         this.adapter = adapter;
     }
 
-    public boolean insert(String name, String url) {
-        StickerMessage stickerMessage = new StickerMessage(name, url);
+    public boolean insert(String username, String friend) {
+        StickerMessage stickerMessage = new StickerMessage(username, friend);
         if (stickerMessages.contains(stickerMessage)) {
             return false;
         }
         stickerMessages.add(stickerMessage);
         this.adapter.notifyItemInserted(stickerMessages.size() - 1);
         return true;
-    }
-
-    public void onTop(String url) {
-        for (int i = 0; i < stickerMessages.size(); i++) {
-            if (stickerMessages.get(i).getUrl().equals(url)) {
-                StickerMessage top = stickerMessages.get(i);
-                stickerMessages.set(i, stickerMessages.get(0));
-                stickerMessages.set(0, top);
-                this.adapter.notifyItemMoved(i, 0);
-            }
-        }
     }
 
     public StickerMessage get(int index) {

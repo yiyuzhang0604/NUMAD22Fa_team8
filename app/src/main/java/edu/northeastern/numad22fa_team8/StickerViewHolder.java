@@ -11,10 +11,14 @@ public class StickerViewHolder extends RecyclerView.ViewHolder /*implements View
 
     public TextView username;
     public TextView friend;
+    public TextView type;
+    public TextView word;
 
     public StickerViewHolder(@NonNull View itemView, Context context) {
         super(itemView);
-        this.username = itemView.findViewById(R.id.editTextEnterUserName);
-        this.friend = itemView.findViewById(R.id.editTextEnterFriendName);
+        this.username = itemView.findViewById(R.id.userView);
+        this.friend = itemView.findViewById(R.id.friendView);
+        this.type = itemView.findViewById(R.id.sentView);
+        this.word = itemView.findViewById(R.id.toView);
     }
 }

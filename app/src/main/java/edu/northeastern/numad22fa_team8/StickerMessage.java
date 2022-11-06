@@ -4,16 +4,16 @@ public class StickerMessage implements Comparable<StickerMessage> {
     private final String username;
     private final String friend;
 
-    public StickerMessage(String name, String url) {
-        this.username = name;
-        this.friend = url;
+    public StickerMessage(String username, String friend) {
+        this.username = username;
+        this.friend = friend;
     }
 
-    public String getName() {
+    public String getUsername() {
         return username;
     }
 
-    public String getUrl() {
+    public String getFriend() {
         return friend;
     }
 

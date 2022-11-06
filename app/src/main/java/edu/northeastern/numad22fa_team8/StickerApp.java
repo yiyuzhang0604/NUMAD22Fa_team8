@@ -83,6 +83,7 @@ public class StickerApp extends AppCompatActivity {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
+                    StickerFactory.getInstance().insert(enterUserName.getText().toString(), enterFriendName.getText().toString());
                     postToastMessage("Received sticker from " + enterUserName.getText().toString(), getApplicationContext());
                 }
             }
