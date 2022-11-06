@@ -1,9 +1,16 @@
 package edu.northeastern.numad22fa_team8;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+<<<<<<< Updated upstream
+=======
+import android.graphics.Color;
+import android.os.Build;
+>>>>>>> Stashed changes
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -151,6 +158,7 @@ public class StickerApp extends AppCompatActivity {
                     Toast.makeText(StickerApp.this, "Please enter a non-empty username", Toast.LENGTH_SHORT).show();
                     return;
                 }
+<<<<<<< Updated upstream
                 // retrieve current token
                 // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
                 FirebaseMessaging.getInstance().getToken()
@@ -171,6 +179,46 @@ public class StickerApp extends AppCompatActivity {
                         });
                 Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
                 btn_register.setText(inputUserName);
+=======
+
+                dbRef.child("users").child(inputUserName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // If user already exists, toast currently stored value.
+                        if (dataSnapshot.exists()) {
+                            Toast.makeText(StickerApp.this, "User already exists'" + inputUserName + "'", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // retrieve current token
+                            // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.w("StickerApp", "Fetching FCM token failed", task.getException());
+                                                return;
+                                            }
+                                            // Get new FCM registration token
+                                            String token = task.getResult();
+                                            // create user
+                                            User user = new User(inputUserName, device_id, token);
+//                                            User user = new User(inputUserName, null, token);
+                                            // add to db
+                                            dbRef.child("users").child(inputUserName).setValue(user);
+                                        }
+                                    });
+                        }
+
+                        Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
+                        btn_register.setText(inputUserName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        //TODO: Handle this
+                    }
+                });
+>>>>>>> Stashed changes
             }
         });
 
@@ -196,6 +244,7 @@ public class StickerApp extends AppCompatActivity {
     }
 
     public void sendNotification() {
+<<<<<<< Updated upstream
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Received New Message")
@@ -209,12 +258,33 @@ public class StickerApp extends AppCompatActivity {
 
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
 
+=======
+        Intent intent = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
+        intent.putExtra("sender", enterSenderName.getText().toString());
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(StickerApp.this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setContentTitle("Received New Message")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentText(enterSenderName.getText().toString() + "send you a new message");
+
+        createNotificationChannel();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(StickerApp.this);
+
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+>>>>>>> Stashed changes
     }
 
     public void createNotificationChannel() {
-        CharSequence name = CHANNEL_NAME;
-        String description = CHANNEL_DESCRIPTION;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_NAME;
+            String description = CHANNEL_DESCRIPTION;
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
