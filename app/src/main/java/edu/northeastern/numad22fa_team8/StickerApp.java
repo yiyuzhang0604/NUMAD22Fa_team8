@@ -6,11 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-<<<<<<< Updated upstream
-=======
 import android.graphics.Color;
 import android.os.Build;
->>>>>>> Stashed changes
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -158,7 +155,6 @@ public class StickerApp extends AppCompatActivity {
                     Toast.makeText(StickerApp.this, "Please enter a non-empty username", Toast.LENGTH_SHORT).show();
                     return;
                 }
-<<<<<<< Updated upstream
                 // retrieve current token
                 // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
                 FirebaseMessaging.getInstance().getToken()
@@ -179,7 +175,6 @@ public class StickerApp extends AppCompatActivity {
                         });
                 Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
                 btn_register.setText(inputUserName);
-=======
 
                 dbRef.child("users").child(inputUserName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -218,7 +213,6 @@ public class StickerApp extends AppCompatActivity {
                         //TODO: Handle this
                     }
                 });
->>>>>>> Stashed changes
             }
         });
 
@@ -244,7 +238,6 @@ public class StickerApp extends AppCompatActivity {
     }
 
     public void sendNotification() {
-<<<<<<< Updated upstream
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Received New Message")
@@ -257,8 +250,7 @@ public class StickerApp extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-
-=======
+        
         Intent intent = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
         intent.putExtra("sender", enterSenderName.getText().toString());
 
