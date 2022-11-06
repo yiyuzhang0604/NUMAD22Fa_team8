@@ -12,7 +12,7 @@ android {
 //            keyPassword '123456'
 //        }
         CS5520 {
-            storeFile file('/Users/yanghe/Documents/AndriodStudioKeystore/CS5520keystore')
+            storeFile file('/Users/yuan/Documents/AndriodStudioKeystore/CS5520keystore')
             storePassword '123456'
             keyAlias 'key0'
             keyPassword '123456'
@@ -78,6 +78,8 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-messaging:23.1.0'
+
+    implementation 'com.firebaseui:firebase-ui-database:8.0.2'
 }
 configurations {
     all {

@@ -1,27 +1,56 @@
 package edu.northeastern.numad22fa_team8;
 
+import java.util.Date;
+
 public class StickerMessage implements Comparable<StickerMessage> {
-    private final String username;
-    private final String friend;
+    private String sender;
+    private String receiver;
+    private int stickerId;
+    private Date timestamp;
 
-    public StickerMessage(String username, String friend) {
-        this.username = username;
-        this.friend = friend;
+    public StickerMessage() {}
+
+    public StickerMessage(String sender, String receiver, int stickerId, Date timestamp) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.stickerId = stickerId;
+        this.timestamp = timestamp;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSender() {
+        return sender;
     }
 
-    public String getFriend() {
-        return friend;
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public int getStickerId() {
+        return stickerId;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public void setStickerId(int stickerId) {
+        this.stickerId = stickerId;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
     public int compareTo(StickerMessage stickerMessage) {
-        if (username.compareTo(stickerMessage.username) == 0) {
-            return friend.compareTo(stickerMessage.friend);
-        }
-        return username.compareTo(stickerMessage.username);
+        return timestamp.compareTo(stickerMessage.timestamp);
     }
 }

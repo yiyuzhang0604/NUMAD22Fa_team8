@@ -8,11 +8,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,8 +20,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.provider.Settings;
@@ -36,31 +32,21 @@ import android.widget.Toast;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 
 public class StickerApp extends AppCompatActivity {
 
     private static String SERVER_KEY;
     DatabaseReference dbRef;
-    Button btn_register, btn_send_sticker, btnHistory;
-    EditText enterUserName, enterFriendName;
+    Button btn_register, btn_send_sticker, btnHistory, btnReceiveHistory;
+    EditText enterSenderName, enterReceiverName;
     private ImageView imageView1, imageView2, imageView3;
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String CHANNEL_NAME = "CHANNEL_NAME";
     private static final String CHANNEL_DESCRIPTION = "CHANNEL_DESCRIPTION";
-    private Map<String, String> userNameToUserIdMap = new HashMap<>();
-    private Map<String, String> userIdToUserNameMap = new HashMap<>();
-    private Map<ImageView, Integer> imageViewToImageIdMap = new HashMap<>();
-    private Map<Integer, Boolean> imageIdSelectedMap = new HashMap<>();
-
-
+    private ImageView selectedImage = null;
+    private Boolean isReceiverExist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,90 +56,90 @@ public class StickerApp extends AppCompatActivity {
         btn_register = findViewById(R.id.buttonUserRegister);
         btn_send_sticker = findViewById(R.id.buttonSendSticker);
         btnHistory = findViewById(R.id.buttonHistory);
-        enterUserName = findViewById(R.id.editTextEnterUserName);
-        enterFriendName = findViewById(R.id.editTextEnterFriendName);
+        btnReceiveHistory = findViewById(R.id.btnReceiveHistory);
+        enterSenderName = findViewById(R.id.editTextEnterUserName);
+        enterReceiverName = findViewById(R.id.editTextEnterFriendName);
         // get server key from google-service.json
         SERVER_KEY = "key=AIzaSyCKl7WKMTFEpQHfjbAs6tZJr_X-EcH_Qik";
         userRegister();
         createNotificationChannel();
-        sendNotification();
+//        sendNotification();
         showStickersAvailable();
+
 
         btn_send_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validateFriendsUsernameInDatabase();
-                if (!userNameToUserIdMap.containsKey(enterFriendName.getText().toString())) {
+                validateReceiverUsernameInDatabase();
+                if (!isReceiverExist) {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
-                    String selectedStickerId = getStickerid();
-                    // create new sticker
-                    Sticker sticker = new Sticker(selectedStickerId, enterUserName.getText().toString(), enterFriendName.getText().toString());
-                    dbRef.child("stickers").child(sticker.getImageId()).setValue(sticker).addOnSuccessListener(
-                            (task) -> {
-                                CharSequence msg = "Sticker successfully send to " + enterFriendName.getText().toString();
-                                Toast.makeText(StickerApp.this, msg, Toast.LENGTH_SHORT).show();
-                            });
-
-                    //Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
-                    //StickerFactory.getInstance().insert(enterUserName.getText().toString(), enterFriendName.getText().toString());
-                    postToastMessage("Received sticker from " + enterUserName.getText().toString(), getApplicationContext());
+                    // send Image
+                    Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
+                    // get Drawable Id
+                    int selectedImageId = (int) selectedImage.getTag();
+                    Date timestamp = new Date();
+                    StickerMessage msg = new StickerMessage(enterSenderName.getText().toString(), enterReceiverName.getText().toString(), selectedImageId, timestamp);
+                    // sendHistory
+                    DatabaseReference sendHistory = dbRef.child("users").child(enterSenderName.getText().toString()).child("sendHistory");
+                    sendHistory.push().setValue(msg);
+                    // receiveHistory
+                    DatabaseReference receiveHistory = dbRef.child("users").child(enterReceiverName.getText().toString()).child("receiveHistory");
+                    receiveHistory.push().setValue(msg);
+                    postToastMessage("Sent sticker from " + enterSenderName.getText().toString() + " to " + enterReceiverName.getText().toString() + ", stickerId: " + selectedImageId, getApplicationContext());
                 }
             }
         });
 
-        // click History Button to get send and receive history
+        // click History Button to get send history
         btnHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openHistory();
             }
         });
+
+        // get receive history
+        btnReceiveHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
+                if (enterSenderName.getText().toString() != "") i.putExtra("sender", enterSenderName.getText().toString());
+                startActivity(i);
+            }
+        });
     }
+
     private void openHistory() {
-        Intent intent = new Intent(this, History.class);
+        Intent intent = new Intent(this, SendHistoryActivity.class);
         startActivity(intent);
     }
 
     private void showStickersAvailable() {
         imageView1 = findViewById(R.id.image1);
         imageView2 = findViewById(R.id.image2);
-        imageView3 = findViewById(R.id.image3);
+        imageView3 = findViewById(R.id.receiveHistoryImage);
         // make it clickable
         imageView1.setClickable(true);
         imageView2.setClickable(true);
         imageView3.setClickable(true);
-        // store image view -> image id
-        imageViewToImageIdMap.put(imageView1, 1);
-        imageViewToImageIdMap.put(imageView2, 2);
-        imageViewToImageIdMap.put(imageView3, 3);
-        // record in map
-        imageIdSelectedMap.put(1, false);
-        imageIdSelectedMap.put(2, false);
-        imageIdSelectedMap.put(3, false);
-        // add onclick listencer
+        // add onclick listener
         imageView1.setOnClickListener((view) -> imageOnClickListener(view));
         imageView2.setOnClickListener((view) -> imageOnClickListener(view));
         imageView3.setOnClickListener((view) -> imageOnClickListener(view));
-
+        // works for sending sticker message and retrieving history
+        imageView1.setTag(R.drawable.joey);
+        imageView2.setTag(R.drawable.rick);
+        imageView3.setTag(R.drawable.simpsons);
     }
 
     private void imageOnClickListener(View view) {
-        int imageId = imageViewToImageIdMap.get(view);
-
-        if (imageIdSelectedMap.get(imageId) == true) {
-            imageIdSelectedMap.put(imageId, false);
-            ((ImageView) view).setColorFilter(null);
-        } else {
-            // users are only allowed to select 1 sticker
-            for (int imgId: imageIdSelectedMap.keySet()) {
-                imageIdSelectedMap.put(imgId, false);
-            }
-            ((ImageView) view).setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.MULTIPLY);
-
-            imageIdSelectedMap.put(imageId, true);
-        }
-
+        if (selectedImage != null) selectedImage.setColorFilter(null);
+        selectedImage = (ImageView) view;
+        selectedImage.setColorFilter(ContextCompat
+                            .getColor(this.getApplicationContext()
+                                    , R.color.purple_200)
+                    , android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
     private void userRegister() {
@@ -161,71 +147,92 @@ public class StickerApp extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dbRef = FirebaseDatabase.getInstance().getReference();
-                String inputUserName = enterUserName.getText().toString();
+                String inputUserName = enterSenderName.getText().toString();
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 if (inputUserName == null) {
                     Toast.makeText(StickerApp.this, "Please enter a non-empty username", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // retrieve current token
-                // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
-                FirebaseMessaging.getInstance().getToken()
-                        .addOnCompleteListener(new OnCompleteListener<String>() {
-                            @Override
-                            public void onComplete(@NonNull Task<String> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w("StickerApp", "Fetching FCM token failed", task.getException());
-                                    return;
-                                }
-                                // Get new FCM registration token
-                                String token = task.getResult();
-                                // create user
-                                User user = new User(inputUserName, device_id, token);
-                                // add to db
-                                dbRef.child("users").child(inputUserName).setValue(user);
-                            }
-                        });
-                Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
-                btn_register.setText(inputUserName);
+
+                dbRef.child("users").child(inputUserName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // If user already exists, toast currently stored value.
+                        if (dataSnapshot.exists()) {
+                            Toast.makeText(StickerApp.this, "User already exists'" + inputUserName + "'", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // retrieve current token
+                            // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.w("StickerApp", "Fetching FCM token failed", task.getException());
+                                                return;
+                                            }
+                                            // Get new FCM registration token
+                                            String token = task.getResult();
+                                            // create user
+                                            User user = new User(inputUserName, device_id, token);
+                                            // add to db
+                                            dbRef.child("users").child(inputUserName).setValue(user);
+                                        }
+                                    });
+                        }
+
+                        Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
+                        btn_register.setText(inputUserName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        //TODO: Handle this
+                    }
+                });
             }
         });
 
     }
 
-    private void validateFriendsUsernameInDatabase() {
+    private void validateReceiverUsernameInDatabase() {
         dbRef = FirebaseDatabase.getInstance().getReference();
-        dbRef.child("users").get().addOnCompleteListener((task) -> {
-            HashMap<String, HashMap<String, String>> tempMap = (HashMap) task.getResult().getValue();
-            //System.out.println("usermap: " + tempMap.toString());
-            //Toast.makeText(StickerApp.this, "map" + tempMap.toString(), Toast.LENGTH_SHORT).show();
-            List<String> userNames = new ArrayList<>();
-            for (String userId : tempMap.keySet()) {
-                String userName = tempMap.get(userId).get("username");
-                if (userName == null || userName.equals(enterUserName.toString())) {
-                    continue;
+
+        String receiver = enterReceiverName.getText().toString();
+
+        dbRef.child("users").child(receiver).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // If data exists, toast currently stored value. Otherwise, set value to "Present"
+                if (dataSnapshot.exists()) {
+                    isReceiverExist = true;
+                } else {
+                    isReceiverExist = false;
                 }
-                userNames.add(userName);
-                userIdToUserNameMap.put(userId, userName);
-                userNameToUserIdMap.put(userName, userId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //TODO: Handle this
             }
         });
     }
 
-    public void sendNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Received New Message")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentText(enterUserName.getText().toString() + "send you a message");
-
-        createNotificationChannel();
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-
-    }
+//    public void sendNotification() {
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.mipmap.ic_launcher)
+//                .setContentTitle("Received New Message")
+//                .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                .setAutoCancel(true)
+//                .setContentText(enterUserName.getText().toString() + "send you a message");
+//
+//        createNotificationChannel();
+//
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//
+//        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+//
+//    }
 
     public void createNotificationChannel() {
         CharSequence name = CHANNEL_NAME;

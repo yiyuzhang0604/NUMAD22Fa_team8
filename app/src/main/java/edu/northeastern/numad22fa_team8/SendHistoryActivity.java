@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class History extends AppCompatActivity {
+public class SendHistoryActivity extends AppCompatActivity {
 
     RecyclerView historyRecycleView;
     TextView totalSent;

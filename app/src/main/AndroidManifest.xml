@@ -15,7 +15,11 @@
         android:theme="@style/Theme.NUMAD22Fa_team8"
         tools:targetApi="31">
         <activity
-            android:name=".History"
+            android:name=".SendHistoryActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".ReceiveHistoryActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity
