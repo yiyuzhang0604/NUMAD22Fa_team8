@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,7 +57,9 @@ public class StickerApp extends AppCompatActivity {
     private static final String CHANNEL_DESCRIPTION = "CHANNEL_DESCRIPTION";
     private Map<String, String> userNameToUserIdMap = new HashMap<>();
     private Map<String, String> userIdToUserNameMap = new HashMap<>();
-    private Map<ImageView, Boolean> imageSelectedMap = new HashMap<>();
+    private Map<ImageView, Integer> imageViewToImageIdMap = new HashMap<>();
+    private Map<Integer, Boolean> imageIdSelectedMap = new HashMap<>();
+
 
 
     @Override
@@ -83,8 +86,17 @@ public class StickerApp extends AppCompatActivity {
                 if (!userNameToUserIdMap.containsKey(enterFriendName.getText().toString())) {
                     Toast.makeText(StickerApp.this, "Friend's name not exist!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
-                    StickerFactory.getInstance().insert(enterUserName.getText().toString(), enterFriendName.getText().toString());
+                    String selectedStickerId = getStickerid();
+                    // create new sticker
+                    Sticker sticker = new Sticker(selectedStickerId, enterUserName.getText().toString(), enterFriendName.getText().toString());
+                    dbRef.child("stickers").child(sticker.getImageId()).setValue(sticker).addOnSuccessListener(
+                            (task) -> {
+                                CharSequence msg = "Sticker successfully send to " + enterFriendName.getText().toString();
+                                Toast.makeText(StickerApp.this, msg, Toast.LENGTH_SHORT).show();
+                            });
+
+                    //Toast.makeText(StickerApp.this, "Friend's name exist!", Toast.LENGTH_SHORT).show();
+                    //StickerFactory.getInstance().insert(enterUserName.getText().toString(), enterFriendName.getText().toString());
                     postToastMessage("Received sticker from " + enterUserName.getText().toString(), getApplicationContext());
                 }
             }
@@ -111,10 +123,14 @@ public class StickerApp extends AppCompatActivity {
         imageView1.setClickable(true);
         imageView2.setClickable(true);
         imageView3.setClickable(true);
+        // store image view -> image id
+        imageViewToImageIdMap.put(imageView1, 1);
+        imageViewToImageIdMap.put(imageView2, 2);
+        imageViewToImageIdMap.put(imageView3, 3);
         // record in map
-        imageSelectedMap.put(imageView1, false);
-        imageSelectedMap.put(imageView2, false);
-        imageSelectedMap.put(imageView3, false);
+        imageIdSelectedMap.put(1, false);
+        imageIdSelectedMap.put(2, false);
+        imageIdSelectedMap.put(3, false);
         // add onclick listencer
         imageView1.setOnClickListener((view) -> imageOnClickListener(view));
         imageView2.setOnClickListener((view) -> imageOnClickListener(view));
@@ -123,19 +139,19 @@ public class StickerApp extends AppCompatActivity {
     }
 
     private void imageOnClickListener(View view) {
-        if (imageSelectedMap.get(view) == true) {
-            imageSelectedMap.put((ImageView) view, false);
+        int imageId = imageViewToImageIdMap.get(view);
+
+        if (imageIdSelectedMap.get(imageId) == true) {
+            imageIdSelectedMap.put(imageId, false);
             ((ImageView) view).setColorFilter(null);
         } else {
             // users are only allowed to select 1 sticker
-            for (ImageView img: imageSelectedMap.keySet()) {
-                imageSelectedMap.put(img, false);
+            for (int imgId: imageIdSelectedMap.keySet()) {
+                imageIdSelectedMap.put(imgId, false);
             }
-            ((ImageView) view).setColorFilter(ContextCompat
-                            .getColor(this.getApplicationContext()
-                                    , R.color.purple_200)
-                    , android.graphics.PorterDuff.Mode.MULTIPLY);
-            imageSelectedMap.put((ImageView) view, true);
+            ((ImageView) view).setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.MULTIPLY);
+
+            imageIdSelectedMap.put(imageId, true);
         }
 
     }
@@ -223,14 +239,22 @@ public class StickerApp extends AppCompatActivity {
         }
     }
 
-    private static void postToastMessage(final String message, final Context context){
+    private void postToastMessage(final String message, final Context context){
         Handler handler = new Handler(Looper.getMainLooper());
-
         handler.post(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String getStickerid() {
+        for (int imgId: imageIdSelectedMap.keySet()) {
+            if (imageIdSelectedMap.get(imgId) == true) {
+                return String.valueOf(imgId);
+            }
+        }
+        return "0";
     }
 }
