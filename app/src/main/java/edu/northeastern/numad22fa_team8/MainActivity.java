@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +16,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btn_a7 = findViewById(R.id.buttonA7);
         Button btn_sticker_app = findViewById(R.id.buttonStickerApp);
+        Button btn_about= findViewById(R.id.about);
+
+        btn_about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String teamName = "Team8: Yiyu Zhang, Yuan Zhuang, Jiayue Wu, Yang He";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(MainActivity.this, teamName, duration);
+                toast.show();
+            }
+        });
         btn_a7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
