@@ -24,8 +24,8 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull StickerViewHolder holder, int position) {
         StickerMessage stickerMessage = StickerFactory.getInstance().get(position);
-        holder.username.setText(stickerMessage.getUsername());
-        holder.friend.setText(stickerMessage.getFriend());
+        holder.username.setText(stickerMessage.getSender());
+        holder.friend.setText(stickerMessage.getReceiver());
     }
 
     @Override

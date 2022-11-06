@@ -4,6 +4,8 @@ public class User {
     public String username;
     public String deviceId;
     public String token;
+//    public List<> sendHistory;
+//    public List<>
 
     public User(String username, String deviceId, String token) {
         this.username = username;

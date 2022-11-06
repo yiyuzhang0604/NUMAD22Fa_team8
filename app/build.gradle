@@ -12,7 +12,7 @@ android {
 //            keyPassword '123456'
 //        }
         CS5520 {
-            storeFile file('/Users/yanghe/Documents/AndriodStudioKeystore/CS5520keystore')
+            storeFile file('/Users/yuan/Documents/AndriodStudioKeystore/CS5520keystore')
             storePassword '123456'
             keyAlias 'key0'
             keyPassword '123456'
