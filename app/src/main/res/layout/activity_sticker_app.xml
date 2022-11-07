@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send Sticker"
-        app:layout_constraintBottom_toTopOf="@+id/receiveHistoryImage"
+        app:layout_constraintBottom_toTopOf="@+id/stickerImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,16 +60,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/receiveHistoryImage"
+        app:layout_constraintStart_toEndOf="@+id/stickerImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.758" />
 
     <ImageView
-        android:id="@+id/receiveHistoryImage"
+        android:id="@+id/stickerImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/simpsons"
-        app:layout_constraintBottom_toTopOf="@+id/buttonHistory"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSendHistory"
         app:layout_constraintEnd_toStartOf="@+id/image2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/image1"
@@ -81,7 +81,7 @@
         android:layout_height="80dp"
         android:src="@drawable/joey"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/receiveHistoryImage"
+        app:layout_constraintEnd_toStartOf="@+id/stickerImage"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
         app:layout_constraintVertical_bias="0.758" />
 
     <Button
-        android:id="@+id/buttonHistory"
+        android:id="@+id/buttonSendHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send History"
@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/receiveHistoryImage" />
+        app:layout_constraintTop_toBottomOf="@+id/stickerImage" />
 
     <Button
         android:id="@+id/btnReceiveHistory"
@@ -108,7 +108,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonHistory" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonSendHistory" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
