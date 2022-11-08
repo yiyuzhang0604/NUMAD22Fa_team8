@@ -6,13 +6,83 @@
     android:layout_height="match_parent"
     tools:context=".SendHistoryActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleViewHistory"
-        android:layout_width="411dp"
-        android:layout_height="731dp"
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="122dp"
+        android:layout_height="179dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/joeyTimesText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendTimesTitle"
+        app:srcCompat="@drawable/joey" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="169dp"
+        android:layout_height="228dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/rickTimesText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView1"
+        app:srcCompat="@drawable/rick" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="167dp"
+        android:layout_height="92dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/simpsonTimesText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:srcCompat="@drawable/simpsons" />
+
+    <TextView
+        android:id="@+id/sendTimesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stickers Sent Times"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/imageView1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/joeyTimesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total sent: -"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView1"
+        app:layout_constraintTop_toTopOf="@+id/imageView1" />
+
+    <TextView
+        android:id="@+id/rickTimesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="180dp"
+        android:text="Total sent: -"
+        app:layout_constraintBottom_toTopOf="@+id/simpsonTimesText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/simpsonTimesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="76dp"
+        android:text="Total sent: -"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

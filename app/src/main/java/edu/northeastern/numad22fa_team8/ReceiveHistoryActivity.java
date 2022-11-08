@@ -47,7 +47,7 @@ public class ReceiveHistoryActivity extends AppCompatActivity {
         // Connecting object of required Adapter class to
         // the Adapter class itself
         adapter = new ReceiveHistoryAdapter(options);
-        // Connecting Adapter class with the Recycler view*/
+        // Connecting Adapter class with the Recycler view
         recyclerView.setAdapter(adapter);
     }
 

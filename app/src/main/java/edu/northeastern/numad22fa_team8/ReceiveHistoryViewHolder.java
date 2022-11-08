@@ -1,6 +1,5 @@
 package edu.northeastern.numad22fa_team8;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,8 +18,8 @@ public class ReceiveHistoryViewHolder extends RecyclerView.ViewHolder /*implemen
         super(itemView);
         this.sender = itemView.findViewById(R.id.sender);
         this.receiver = itemView.findViewById(R.id.receiver);
-        this.image = itemView.findViewById(R.id.receiveHistoryImage);
-        this.timestamp = itemView.findViewById(R.id.timestamp);
+        this.image = itemView.findViewById(R.id.stickerImage);
+        this.timestamp = itemView.findViewById(R.id.sendTimesText);
     }
 }
 
