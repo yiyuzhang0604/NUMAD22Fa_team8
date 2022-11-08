@@ -16,19 +16,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
@@ -189,25 +184,22 @@ public class StickerApp extends AppCompatActivity {
                 if (!task.isSuccessful()) {
                     return;
                 }
-                DataSnapshot snapshot = task.getResult();
-                if (snapshot.exists() && snapshot.hasChild(senderName)) {
+                DataSnapshot users = task.getResult();
+                if (users.exists() && users.hasChild(senderName)) {
                     Toast.makeText(StickerApp.this, "User already exists'" + senderName + "'", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // User doesn't exist
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("StickerApp", "Fetching FCM token failed", task.getException());
-                            return;
-                        }
-                        String token = task.getResult();
-                        User user = new User(senderName, device_id, token);
-                        dbRef.child("users").child(senderName).setValue(user);
-                        Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
-                        btnRegister.setText(senderName);
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
+                    if (!task1.isSuccessful()) {
+                        Log.w("StickerApp", "Fetching FCM token failed", task1.getException());
+                        return;
                     }
+                    String token = task1.getResult();
+                    User user = new User(senderName, device_id, token);
+                    dbRef.child("users").child(senderName).setValue(user);
+                    Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
+                    btnRegister.setText(senderName);
                 });
             });
         });
