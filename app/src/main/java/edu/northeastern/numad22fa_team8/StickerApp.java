@@ -58,7 +58,7 @@ public class StickerApp extends AppCompatActivity {
         btnReceiveHistory = findViewById(R.id.btnReceiveHistory);
         enterSenderName = findViewById(R.id.editTextEnterUserName);
         enterReceiverName = findViewById(R.id.editTextEnterFriendName);
-        userRegister();
+        registerSignInBtnCallback();
         createNotificationChannel();
         sendNotification();
         showStickersAvailable();
@@ -176,51 +176,39 @@ public class StickerApp extends AppCompatActivity {
                 , android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
-    private void userRegister() {
+    private void registerSignInBtnCallback() {
         btnRegister.setOnClickListener(view -> {
-            dbRef = FirebaseDatabase.getInstance().getReference();
-            String inputUserName = enterSenderName.getText().toString();
+            String senderName = enterSenderName.getText().toString();
             String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-            if (inputUserName.equals("")) {
+            if (senderName.equals("")) {
                 Toast.makeText(StickerApp.this, "Please enter a non-empty username", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            dbRef.child("users").child(inputUserName).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // If user already exists, toast currently stored value.
-                    if (dataSnapshot.exists()) {
-                        Toast.makeText(StickerApp.this, "User already exists'" + inputUserName + "'", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // retrieve current token
-                        // Reference: https://firebase.google.com/docs/cloud-messaging/android/client
-                        FirebaseMessaging.getInstance().getToken()
-                                .addOnCompleteListener(new OnCompleteListener<String>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<String> task) {
-                                        if (!task.isSuccessful()) {
-                                            Log.w("StickerApp", "Fetching FCM token failed", task.getException());
-                                            return;
-                                        }
-                                        // Get new FCM registration token
-                                        String token = task.getResult();
-                                        // create user
-                                        User user = new User(inputUserName, device_id, token);
-                                        // add to db
-                                        dbRef.child("users").child(inputUserName).setValue(user);
-                                    }
-                                });
+            dbRef.child("users").get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    return;
+                }
+                DataSnapshot snapshot = task.getResult();
+                if (snapshot.exists() && snapshot.hasChild(senderName)) {
+                    Toast.makeText(StickerApp.this, "User already exists'" + senderName + "'", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // User doesn't exist
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("StickerApp", "Fetching FCM token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        User user = new User(senderName, device_id, token);
+                        dbRef.child("users").child(senderName).setValue(user);
+                        Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
+                        btnRegister.setText(senderName);
                     }
-
-                    Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
-                    btnRegister.setText(inputUserName);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    //TODO: Handle this
-                }
+                });
             });
         });
 
