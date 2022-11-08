@@ -186,25 +186,27 @@ public class StickerApp extends AppCompatActivity {
 
             dbRef.child("users").get().addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
+                    btnRegister.setText("SIGN IN");
                     return;
                 }
                 DataSnapshot users = task.getResult();
                 if (users.exists() && users.hasChild(senderName)) {
                     Toast.makeText(StickerApp.this, "User already exists'" + senderName + "'", Toast.LENGTH_SHORT).show();
-                    return;
+                } else {
+                    // User doesn't exist
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
+                        if (!task1.isSuccessful()) {
+                            Log.w("StickerApp", "Fetching FCM token failed", task1.getException());
+                            return;
+                        }
+                        String token = task1.getResult();
+                        User user = new User(senderName, device_id, token);
+                        dbRef.child("users").child(senderName).setValue(user);
+                    });
                 }
-                // User doesn't exist
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
-                    if (!task1.isSuccessful()) {
-                        Log.w("StickerApp", "Fetching FCM token failed", task1.getException());
-                        return;
-                    }
-                    String token = task1.getResult();
-                    User user = new User(senderName, device_id, token);
-                    dbRef.child("users").child(senderName).setValue(user);
-                    Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
-                    btnRegister.setText(senderName);
-                });
+
+                Toast.makeText(StickerApp.this, "You have successfully sign in!", Toast.LENGTH_SHORT).show();
+                btnRegister.setText("Current user: " + senderName);
             });
         });
 
