@@ -92,6 +92,10 @@ public class StickerApp extends AppCompatActivity {
 
             String senderName = enterSenderName.getText().toString();
             String receiverName = enterReceiverName.getText().toString();
+            if (senderName.isEmpty() || receiverName.isEmpty()) {
+                Toast.makeText(StickerApp.this, "Please specify sender and receiver!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (senderName.equals(receiverName)) {
                 Toast.makeText(StickerApp.this, "Can't send to yourself!", Toast.LENGTH_SHORT).show();
                 return;

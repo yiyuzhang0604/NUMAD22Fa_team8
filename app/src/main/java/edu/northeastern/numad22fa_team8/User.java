@@ -62,7 +62,7 @@ public class User {
     }
 
     public void incrementSentImage(Integer imageId) {
-        String key = imageId.toString();
+        String key = imageId.toString() + "_image";
         sendHistory.put(key, sendHistory.getOrDefault(key, 0) + 1);
     }
 

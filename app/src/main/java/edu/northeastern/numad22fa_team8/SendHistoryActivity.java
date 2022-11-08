@@ -49,7 +49,7 @@ public class SendHistoryActivity extends AppCompatActivity {
             User user = users.child(sender).getValue(User.class);
             assert user != null;
             for (Map.Entry<String, Integer> sends : user.getSendHistory().entrySet()) {
-                switch (Integer.parseInt(sends.getKey())) {
+                switch (Integer.parseInt(sends.getKey().split("_")[0])) {
                     case 1:
                         times1.setText(sends.getValue().toString());
                         break;
