@@ -15,14 +15,6 @@ public class User {
 
     public User() {}
 
-    public Map<String, Integer> getSendHistory() {
-        return sendHistory;
-    }
-
-    public void setSendHistory(Map<String, Integer> sendHistory) {
-        this.sendHistory = sendHistory;
-    }
-
     public User(String username, String deviceId, String token) {
         this.username = username;
         this.deviceId = deviceId;
@@ -51,6 +43,14 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Map<String, Integer> getSendHistory() {
+        return sendHistory;
+    }
+
+    public void setSendHistory(Map<String, Integer> sendHistory) {
+        this.sendHistory = sendHistory;
     }
 
     public List<StickerMessage> getReceiveHistory() {

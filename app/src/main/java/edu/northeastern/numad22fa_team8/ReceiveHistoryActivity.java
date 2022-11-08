@@ -1,7 +1,9 @@
 package edu.northeastern.numad22fa_team8;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,9 +17,9 @@ import com.google.firebase.database.Query;
 public class ReceiveHistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    ReceiveHistoryAdapter adapter; // Create Object of the Adapter class
-    DatabaseReference mbase;
-    String sender;
+    private ReceiveHistoryAdapter adapter;
+    private DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+    private String sender = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +27,11 @@ public class ReceiveHistoryActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             sender = extras.getString("sender");
+        } else {
+            Toast.makeText(ReceiveHistoryActivity.this, "No sender name given!", Toast.LENGTH_SHORT).show();
         }
 
         setContentView(R.layout.activity_receive_history);
-
-        mbase = FirebaseDatabase.getInstance().getReference();
 
         recyclerView = findViewById(R.id.receiveHistoryRecycleViewHistory);
 
@@ -39,7 +41,7 @@ public class ReceiveHistoryActivity extends AppCompatActivity {
 
         // It is a class provide by the FirebaseUI to make a
         // query in the database to fetch appropriate data
-        DatabaseReference historyDBRef = mbase.child("users").child(sender).child("receiveHistory");
+        DatabaseReference historyDBRef = db.child("users").child(sender).child("receiveHistory");
         FirebaseRecyclerOptions<StickerMessage> options
                 = new FirebaseRecyclerOptions.Builder<StickerMessage>()
                 .setQuery(historyDBRef, StickerMessage.class)

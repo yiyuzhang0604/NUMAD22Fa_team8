@@ -25,7 +25,7 @@ public class ReceiveHistoryAdapter extends FirebaseRecyclerAdapter<
         holder.sender.setText(model.getSender());
         holder.receiver.setText(model.getReceiver());
         holder.image.setImageResource(model.getStickerId());
-//        holder.timestamp.setText(model.getTimestamp().toString());
+        holder.timestamp.setText(model.getTimestamp().toString());
     }
 
     // Function to tell the class about the Card view

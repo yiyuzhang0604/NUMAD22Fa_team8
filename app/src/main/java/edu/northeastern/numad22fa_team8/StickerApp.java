@@ -64,25 +64,26 @@ public class StickerApp extends AppCompatActivity {
         showStickersAvailable();
 
         registerSendBtnCallback();
+        registerSendHistoryBtnCallback();
+        registerReceiveHistoryBtnCallback();
+    }
 
-        // start send history activity
+    private void registerReceiveHistoryBtnCallback() {
+        btnReceiveHistory.setOnClickListener(view -> {
+            Intent i = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
+            if (!enterSenderName.getText().toString().equals(""))
+                i.putExtra("sender", enterSenderName.getText().toString());
+            startActivity(i);
+        });
+    }
+
+    private void registerSendHistoryBtnCallback() {
         btnSendHistory.setOnClickListener(view -> {
             Intent i = new Intent(StickerApp.this, SendHistoryActivity.class);
             if (!enterSenderName.getText().toString().equals("")) {
                 i.putExtra("sender", enterSenderName.getText().toString());
             }
             startActivity(i);
-        });
-
-        // start receive history activity
-        btnReceiveHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(StickerApp.this, ReceiveHistoryActivity.class);
-                if (!enterSenderName.getText().toString().equals(""))
-                    i.putExtra("sender", enterSenderName.getText().toString());
-                startActivity(i);
-            }
         });
     }
 
