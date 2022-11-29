@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/meowfinder_home_24"
+        android:id="@+id/meow_home"/>
+    <item android:title="Search for posts"
+        android:icon="@drawable/meowfinder_search_24"
+        android:id="@+id/meow_search"/>
+    <item android:title="Create a post"
+        android:icon="@drawable/meowfinder_create_post_24"
+        android:id="@+id/meow_create"/>
+</menu>
