@@ -55,7 +55,7 @@ public class StickerApp extends AppCompatActivity {
         enterReceiverName = findViewById(R.id.editTextEnterFriendName);
         registerSignInBtnCallback();
         createNotificationChannel();
-        sendNotification();
+//        sendNotification();
         showStickersAvailable();
 
         registerSendBtnCallback();
