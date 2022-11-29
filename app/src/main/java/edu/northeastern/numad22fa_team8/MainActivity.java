@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import edu.northeastern.numad22fa_team8.MeowFinder.MFAppMainActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Button btn_a7 = findViewById(R.id.buttonA7);
         Button btn_sticker_app = findViewById(R.id.buttonStickerApp);
         Button btn_about= findViewById(R.id.about);
+        Button btn_meowfinder_app = findViewById(R.id.buttonMeowFinderApp);
 
         btn_about.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_meowfinder_app.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMeowFinderApp();
+            }
+        });
+
     }
     private void openActivity() {
         Intent intent = new Intent(this, A7.class);
@@ -50,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void openStickerApp() {
         Intent intent = new Intent(this, StickerApp.class);
+        startActivity(intent);
+    }
+
+    private void openMeowFinderApp() {
+        Intent intent = new Intent(this, MFAppMainActivity.class);
         startActivity(intent);
     }
 }
