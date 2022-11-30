@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -41,6 +43,10 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import edu.northeastern.numad22fa_team8.R;
 
@@ -91,18 +97,13 @@ public class CreatePostFragment extends Fragment {
         }
     }
 
-
-
     // Initialize variables
     Button btLocation;
     TextView tvLatitude, tvLongitude;
     FusedLocationProviderClient client;
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_create_post,
                 container, false);
@@ -145,12 +146,9 @@ public class CreatePostFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Check condition
         if (requestCode == 100 && (grantResults.length > 0)
                 && (grantResults[0] + grantResults[1]
@@ -162,104 +160,52 @@ public class CreatePostFragment extends Fragment {
         else {
             // When permission are denied
             // Display toast
-            Toast
-                    .makeText(getActivity(),
-                            "Permission denied",
-                            Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(getActivity(),"Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
         // Initialize Location manager
-        LocationManager locationManager
-                = (LocationManager) getActivity()
-                .getSystemService(
-                        Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         // Check condition
-        if (locationManager.isProviderEnabled(
-                LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER)) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             // When location service is enabled
             // Get last location
-            client.getLastLocation().addOnCompleteListener(
-                    new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(
-                                @NonNull Task<Location> task) {
+            client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    // Initialize location
+                    Location location = task.getResult();
+                    // Check condition
+                    if (location != null) {
+                        // When location result is not
+                        // null set latitude
+                        tvLatitude.setText(String.valueOf(location.getLatitude()));
+                        // set longitude
+                        tvLongitude.setText(String.valueOf(location.getLongitude()));
 
-                            // Initialize location
-                            Location location
-                                    = task.getResult();
-                            // Check condition
-                            if (location != null) {
-                                // When location result is not
-                                // null set latitude
-                                tvLatitude.setText(
-                                        String.valueOf(
-                                                location
-                                                        .getLatitude()));
-                                // set longitude
-                                tvLongitude.setText(
-                                        String.valueOf(
-                                                location
-                                                        .getLongitude()));
-                            } else {
-                                // When location result is null
-                                // initialize location request
-                                LocationRequest locationRequest
-                                        = new LocationRequest()
-                                        .setPriority(
-                                                LocationRequest
-                                                        .PRIORITY_HIGH_ACCURACY)
-                                        .setInterval(10000)
-                                        .setFastestInterval(
-                                                1000)
-                                        .setNumUpdates(1);
-
-                                // Initialize location call back
-                                LocationCallback
-                                        locationCallback
-                                        = new LocationCallback() {
-                                    @Override
-                                    public void
-                                    onLocationResult(
-                                            LocationResult
-                                                    locationResult) {
-                                        // Initialize
-                                        // location
-                                        Location location1
-                                                = locationResult
-                                                .getLastLocation();
-                                        // Set latitude
-                                        tvLatitude.setText(
-                                                String.valueOf(
-                                                        location1
-                                                                .getLatitude()));
-                                        // Set longitude
-                                        tvLongitude.setText(
-                                                String.valueOf(
-                                                        location1
-                                                                .getLongitude()));
-                                    }
-                                };
-
-                                // Request location updates
-                                client.requestLocationUpdates(
-                                        locationRequest,
-                                        locationCallback,
-                                        Looper.myLooper());
-                            }
+                        // get city and postal code
+                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                            String city = addresses.get(0).getLocality();
+                            String postalCode = addresses.get(0).getPostalCode();
+                            Toast.makeText(getActivity(), city + ", " + postalCode, Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    } else {
+                        // TODO: When location result is null
+
+                    }
+                }
+            });
         } else {
-            // When location service is not enabled
-            // open location setting
-            startActivity(
-                    new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            // When location service is not enabled open location setting
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 }
