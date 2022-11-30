@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -13,41 +12,35 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.northeastern.numad22fa_team8.MeowFinder.model.PostDetail;
 import edu.northeastern.numad22fa_team8.R;
 
 /**
@@ -65,6 +58,16 @@ public class CreatePostFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+    public static final String MeowFinderAppPosts = "MeowFinderAppPosts";
+
+    private Button submitBtn;
+    private EditText titleEditText;
+    private EditText descriptionEditText;
+    private EditText locationEditText;
+    private EditText authorNameEditText;
+    private EditText authorEmailEditText;
 
     public CreatePostFragment() {
         // Required empty public constructor
@@ -98,48 +101,28 @@ public class CreatePostFragment extends Fragment {
     }
 
     // Initialize variables
-    Button btLocation;
-    TextView tvLatitude, tvLongitude;
+    Button locationBtn;
     FusedLocationProviderClient client;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize view
-        View view = inflater.inflate(R.layout.fragment_create_post,
-                container, false);
+        View view = inflater.inflate(R.layout.fragment_create_post, container, false);
 
-        // Assign variable
-        btLocation = view.findViewById(R.id.bt_location);
-        tvLatitude = view.findViewById(R.id.tv_latitude);
-        tvLongitude = view.findViewById(R.id.tv_longitude);
+        locationBtn = view.findViewById(R.id.bt_create_post_get_location);
+        submitBtn = view.findViewById(R.id.bt_create_post_submit);
+        titleEditText = (EditText) view.findViewById(R.id.new_post_title);
+        descriptionEditText = (EditText) view.findViewById(R.id.new_post_description);
+        locationEditText = (EditText) view.findViewById(R.id.new_post_location);
+        authorNameEditText = (EditText) view.findViewById(R.id.new_post_author_name);
+        authorEmailEditText = (EditText) view.findViewById(R.id.new_post_author_email);
 
         // Initialize location client
         client = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        btLocation.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override public void onClick(View view)
-                    {
-                        // check condition
-                        if (ContextCompat.checkSelfPermission(
-                                getActivity(),
-                                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                                && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            // When permission is granted
-                            // Call method
-                            getCurrentLocation();
-                        }
-                        else {
-                            // When permission is not granted
-                            // Call method
-                            requestPermissions(
-                                    new String[] {
-                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.ACCESS_COARSE_LOCATION },
-                                    100);
-                        }
-                    }
-                });
+        // register button callbacks
+        registerGetCurrentLocationBtnCallback();
+        registerSubmitBtnCallback();
 
         // Return view
         return view;
@@ -154,7 +137,7 @@ public class CreatePostFragment extends Fragment {
                 && (grantResults[0] + grantResults[1]
                 == PackageManager.PERMISSION_GRANTED)) {
             // When permission are granted
-            // Call  method
+            // Call method
             getCurrentLocation();
         }
         else {
@@ -180,12 +163,6 @@ public class CreatePostFragment extends Fragment {
                     Location location = task.getResult();
                     // Check condition
                     if (location != null) {
-                        // When location result is not
-                        // null set latitude
-                        tvLatitude.setText(String.valueOf(location.getLatitude()));
-                        // set longitude
-                        tvLongitude.setText(String.valueOf(location.getLongitude()));
-
                         // get city and postal code
                         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
                         List<Address> addresses = null;
@@ -193,7 +170,7 @@ public class CreatePostFragment extends Fragment {
                             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                             String city = addresses.get(0).getLocality();
                             String postalCode = addresses.get(0).getPostalCode();
-                            Toast.makeText(getActivity(), city + ", " + postalCode, Toast.LENGTH_SHORT).show();
+                            locationEditText.setText(city + ", " + postalCode);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -208,4 +185,73 @@ public class CreatePostFragment extends Fragment {
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
+
+    private void registerGetCurrentLocationBtnCallback() {
+        locationBtn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        // check condition
+                        if (ContextCompat.checkSelfPermission(
+                                getActivity(),
+                                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                                && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            // When permission is granted
+                            // Call method
+                            getCurrentLocation();
+                        }
+                        else {
+                            // When permission is not granted
+                            // Call method
+                            requestPermissions(
+                                    new String[] {
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                                    100);
+                        }
+                    }
+            });
+    }
+
+    private void registerSubmitBtnCallback() {
+        submitBtn.setOnClickListener(view -> {
+            String title = titleEditText.getText().toString();
+            String description = descriptionEditText.getText().toString();
+            String location = locationEditText.getText().toString();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String time = df.format(new Date());
+            String authorName = authorNameEditText.getText().toString();
+            String authorEmail = authorEmailEditText.getText().toString();
+
+            PostDetail postDetail = new PostDetail(title, description, location, time, authorName, authorEmail);
+
+            if (title.isEmpty() || description.isEmpty() || location.isEmpty()) {
+                Toast.makeText(getContext(), "Please provide more information. \n(Only Author info is optional.)", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            dbRef.child(MeowFinderAppPosts).get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getActivity(), "it is not successful yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                DataSnapshot posts = task.getResult();
+                if (posts.exists() && posts.hasChild(title)) {
+                    Toast.makeText(getActivity(), "This title already exists", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
+                        if (!task1.isSuccessful()) {
+                            Log.w("MeowFinderAppPosts", "Fetching FCM token failed", task1.getException());
+                            return;
+                        }
+                        dbRef.child(MeowFinderAppPosts).child(title).setValue(postDetail);
+                    });
+                }
+
+                Toast.makeText(getContext(), "Submitting post...", Toast.LENGTH_SHORT).show();
+                dbRef.child(MeowFinderAppPosts).child(title).setValue(postDetail);
+                Toast.makeText(getContext(), "You successfully created a new post!", Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
+
 }
