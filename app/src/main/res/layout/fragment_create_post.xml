@@ -5,51 +5,71 @@
     android:layout_height="match_parent"
     tools:context=".MeowFinder.CreatePostFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mfapp_create_post_form_title"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/new_post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/mfapp_create_post_form_title" />
+
+        <EditText
+            android:id="@+id/new_post_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/mfapp_create_post_description" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bt_location"
-            android:text="Get Location"/>
+            android:layout_marginTop="10dp"
+            android:id="@+id/bt_create_post_get_location"
+            android:text="Use my current location"/>
 
-        <TextView
+        <EditText
+            android:id="@+id/new_post_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Latitude"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/teal_200"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/mfapp_create_post_location" />
 
-        <TextView
+        <EditText
+            android:id="@+id/new_post_author_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_latitude"
-            android:text="0.0"
-            android:textSize="24sp"/>
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/mfapp_create_post_author_name" />
 
-        <TextView
+        <EditText
+            android:id="@+id/new_post_author_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Longitude"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/teal_200"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/mfapp_create_post_author_email" />
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_longitude"
-            android:text="0.0"
-            android:textSize="24sp"/>
+            android:layout_marginTop="10dp"
+            android:id="@+id/bt_create_post_submit"
+            android:text="Submit"/>
 
     </LinearLayout>
 
