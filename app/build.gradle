@@ -89,6 +89,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.1.0'
 
     implementation 'com.firebaseui:firebase-ui-database:8.0.2'
+
+    // Create a post
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 }
 configurations {
     all {
