@@ -1,6 +1,6 @@
 package edu.northeastern.numad22fa_team8.MeowFinder.model;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 public class PostDetail {
     private String title;
@@ -11,6 +11,8 @@ public class PostDetail {
     private String authorName;
     private String authorEmail;
 
+    public PostDetail() {}
+
     public PostDetail(String title, String description, String location, String timestamp, String authorName, String authorEmail) {
         this.title = title;
         this.description = description;
@@ -19,6 +21,23 @@ public class PostDetail {
         this.status = PostStatus.Open;
         this.authorName = authorName;
         this.authorEmail = authorEmail;
+    }
+
+    public boolean matches(List<String> filterGroup) {
+        List<String> filterables = List.of(
+                authorName,
+                authorEmail,
+                location,
+                title
+        );
+        assert filterGroup.size() == filterables.size();
+
+        for (int i = 0; i < filterables.size(); i++) {
+            if (!filterables.get(i).matches(filterGroup.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getTitle() {
