@@ -17,12 +17,12 @@ android {
             keyAlias 'key0'
             keyPassword '123456'
         }
-//        Group {
-//            storeFile file('C:\\Users\\Gloria\\Desktop\\NEU\\5520KeyStore\\5520GroupKeyStore.jks')
-//            storePassword '123456'
-//            keyAlias 'key0'
-//            keyPassword '123456'
-//        }
+        Group {
+            storeFile file('C:\\Users\\Gloria\\Desktop\\NEU\\5520KeyStore\\5520GroupKeyStore.jks')
+            storePassword '123456'
+            keyAlias 'key0'
+            keyPassword '123456'
+        }
 //        CS5520 {
 //            storeFile file('/Users/yanghe/Documents/AndriodStudioKeystore/CS5520keystore')
 //            storePassword '123456'
@@ -41,22 +41,22 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.CS5520
+        signingConfig signingConfigs.Group
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.CS5520
+            signingConfig signingConfigs.Group
         }
         debug {
-            signingConfig signingConfigs.CS5520
+            signingConfig signingConfigs.Group
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_9
+        targetCompatibility JavaVersion.VERSION_1_9
     }
     buildFeatures {
         viewBinding true
