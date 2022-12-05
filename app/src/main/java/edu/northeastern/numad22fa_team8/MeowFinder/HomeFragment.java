@@ -2,13 +2,21 @@ package edu.northeastern.numad22fa_team8.MeowFinder;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import java.util.List;
+import edu.northeastern.numad22fa_team8.MeowFinder.model.PostDetail;
 import edu.northeastern.numad22fa_team8.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +29,9 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    public static final String MeowFinderAppPosts = "MeowFinderAppPosts";
+    private CatAdapter catAdapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,7 +71,32 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view=inflater.inflate(R.layout.fragment_home, container, false);
+
+        recyclerView=(RecyclerView)view.findViewById(R.id.recycler1);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        FirebaseRecyclerOptions<PostDetail> options =
+                new FirebaseRecyclerOptions.Builder<PostDetail>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child(MeowFinderAppPosts), PostDetail.class)
+                        .build();
+
+        catAdapter = new CatAdapter(options);
+        recyclerView.setAdapter(catAdapter);
+        return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        catAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        catAdapter.stopListening();
     }
 }

@@ -11,7 +11,10 @@ public class PostDetail {
     private String authorName;
     private String authorEmail;
 
-    public PostDetail() {}
+    public PostDetail() {
+
+    }
+
 
     public PostDetail(String title, String description, String location, String timestamp, String authorName, String authorEmail) {
         this.title = title;
