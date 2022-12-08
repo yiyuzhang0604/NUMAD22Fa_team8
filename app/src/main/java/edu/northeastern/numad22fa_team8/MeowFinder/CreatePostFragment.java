@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -250,6 +251,11 @@ public class CreatePostFragment extends Fragment {
                 Toast.makeText(getContext(), "Submitting post...", Toast.LENGTH_SHORT).show();
                 dbRef.child(MeowFinderAppPosts).child(title).setValue(postDetail);
                 Toast.makeText(getContext(), "You successfully created a new post!", Toast.LENGTH_SHORT).show();
+
+                // redirect to corresponding Post Detail (same in CatAdapter setOnClickListener)
+                Intent intent = new Intent((AppCompatActivity)view.getContext(), CatPostDetail.class);
+                intent.putExtra("title", title);
+                view.getContext().startActivity(intent);
             });
         });
     }
