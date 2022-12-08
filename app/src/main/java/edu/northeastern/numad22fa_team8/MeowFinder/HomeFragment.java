@@ -1,8 +1,8 @@
 package edu.northeastern.numad22fa_team8.MeowFinder;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.List;
 import edu.northeastern.numad22fa_team8.MeowFinder.model.PostDetail;
 import edu.northeastern.numad22fa_team8.R;
 
@@ -23,7 +23,7 @@ import edu.northeastern.numad22fa_team8.R;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements CatAdapter.RecyclerInterface{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     public static final String MeowFinderAppPosts = "MeowFinderAppPosts";
     private CatAdapter catAdapter;
+    DatabaseReference db;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        db = FirebaseDatabase.getInstance().getReference().child("MeowFinderAppPosts");
     }
 
     @Override
@@ -82,7 +84,7 @@ public class HomeFragment extends Fragment {
                         .setQuery(FirebaseDatabase.getInstance().getReference().child(MeowFinderAppPosts), PostDetail.class)
                         .build();
 
-        catAdapter = new CatAdapter(options);
+        catAdapter = new CatAdapter(options, this);
         recyclerView.setAdapter(catAdapter);
         return view;
     }
@@ -98,5 +100,14 @@ public class HomeFragment extends Fragment {
     public void onStop() {
         super.onStop();
         catAdapter.stopListening();
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getActivity(), CatPostDetail.class);
+        String unique = db.push().getKey();
+        intent.putExtra("title", unique);
+        startActivity(intent);
     }
 }

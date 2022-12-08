@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import edu.northeastern.numad22fa_team8.R;
 
@@ -25,9 +26,31 @@ public class PostDetailFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String title;
+    private String description;
+    private String location;
+    private String timestamp;
+    private String status;
+    private String authorName;
+    private String authorEmail;
+
 
     public PostDetailFragment() {
         // Required empty public constructor
+    }
+
+    public PostDetailFragment(String title, String description, String location, String timestamp, String status, String authorName, String authorEmail) {
+        //title, description, location, timestamp, status, authorName, authorEmail;
+        // Required empty public constructor
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.authorName = authorName;
+        this.authorEmail = authorEmail;
+
+
     }
 
     /**
@@ -61,6 +84,18 @@ public class PostDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_post_detail, container, false);
+        TextView title_holder = view.findViewById(R.id.title);
+        TextView description_holder = view.findViewById(R.id.description);
+        TextView location_holder = view.findViewById(R.id.location);
+        TextView timestamp_holder = view.findViewById(R.id.timestamp);
+        TextView status_holder = view.findViewById(R.id.status);
+        TextView authorName_holder = view.findViewById(R.id.AuthorName);
+        TextView authorEmail_holder = view.findViewById(R.id.AuthorEmail);
+
+        title_holder.setText(title);
+
+
+        return view;
     }
 }

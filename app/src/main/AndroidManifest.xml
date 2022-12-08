@@ -58,6 +58,19 @@
             android:configChanges="orientation|screenSize"
             android:exported="false" />
 
+        <activity
+            android:name=".MeowFinder.CatPostDetail"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+
+        <activity
+            android:name=".MeowFinder.HomeFragment"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+
+
+
+
         <service
             android:name=".java.MyFirebaseMessagingService"
             android:exported="false">
