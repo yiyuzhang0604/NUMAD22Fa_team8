@@ -1,6 +1,7 @@
 package edu.northeastern.numad22fa_team8.MeowFinder;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -63,9 +64,9 @@ public class CatPostDetail extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     public void onBackPressed() {
-        /*Intent intent = new Intent(CatPostDetail.this, HomeFragment.class);
-        startActivity(intent);*/
-        getSupportFragmentManager().beginTransaction().replace(R.id.cat_post_detail, new HomeFragment()).addToBackStack(null).commit();
+        Intent intent = new Intent(CatPostDetail.this, MFAppMainActivity.class);
+        startActivity(intent);
+        //getSupportFragmentManager().beginTransaction().replace(R.id.cat_post_detail, new HomeFragment()).addToBackStack(null).commit();
 
 
     }
