@@ -109,11 +109,10 @@ public class SearchPostsFragment extends Fragment {
                         postDetail -> postDetail.matches(filterGroup)).collect(Collectors.toList());
 
                 broker.setResults(results);
-//                Intent intent = new Intent(view1.getContext(), SearchResult.class);
-//                startActivity(intent);
+                Toast.makeText(getActivity(), "Finish searching.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this.getActivity(), SearchResult.class);
+                startActivity(intent);
             });
-
-
         });
 
         return view;

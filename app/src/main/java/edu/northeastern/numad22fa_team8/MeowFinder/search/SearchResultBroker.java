@@ -12,13 +12,17 @@ public class SearchResultBroker {
         return INSTANCE;
     }
 
-    private List<PostDetail> results;
+    private List<PostDetail> results = List.of();
 
-    public List<PostDetail> getResults() {
-        return results;
+    public PostDetail getResult(int position) {
+        return results.get(position);
     }
 
     public void setResults(List<PostDetail> toStore) {
         results = toStore;
+    }
+
+    public int getSize() {
+        return results.size();
     }
 }
