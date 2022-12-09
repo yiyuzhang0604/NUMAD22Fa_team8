@@ -16,10 +16,10 @@ public class ReceiveHistoryViewHolder extends RecyclerView.ViewHolder /*implemen
 
     public ReceiveHistoryViewHolder(@NonNull View itemView) {
         super(itemView);
-        this.sender = itemView.findViewById(R.id.sender);
-        this.receiver = itemView.findViewById(R.id.receiver);
+        this.sender = itemView.findViewById(R.id.ownerNameDisplay);
+        this.receiver = itemView.findViewById(R.id.ownerEmailDisplay);
         this.image = itemView.findViewById(R.id.stickerImage);
-        this.timestamp = itemView.findViewById(R.id.sendTimesText);
+        this.timestamp = itemView.findViewById(R.id.titleDisplay);
     }
 }
 
