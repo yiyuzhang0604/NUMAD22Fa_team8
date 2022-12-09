@@ -238,6 +238,7 @@ public class CreatePostFragment extends Fragment {
                 DataSnapshot posts = task.getResult();
                 if (posts.exists() && posts.hasChild(title)) {
                     Toast.makeText(getActivity(), "This title already exists", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
                     FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
                         if (!task1.isSuccessful()) {

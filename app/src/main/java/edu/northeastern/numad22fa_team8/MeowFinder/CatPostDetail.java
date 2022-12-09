@@ -82,12 +82,12 @@ public class CatPostDetail extends AppCompatActivity {
                     String str_authorEmail = snapshot.child("authorEmail").getValue().toString();
 
                     title.setText(String.format("Title: %s", str_title));
-                    authorName.setText(String.format("Author Name: %s", str_description));
-                    authorEmail.setText(String.format("Author Email: %s", str_location));
-                    description.setText(String.format("Description: %s", str_timestamp));
-                    location.setText(String.format("Location: %s", str_status));
-                    timestamp.setText(String.format("Timestamp: %s", str_authorName));
-                    status.setText(String.format("Status: %s", str_authorEmail));
+                    authorName.setText(String.format("Author Name: %s", str_authorName));
+                    authorEmail.setText(String.format("Author Email: %s", str_authorEmail));
+                    description.setText(String.format("Description: %s", str_description));
+                    location.setText(String.format("Location: %s", str_location));
+                    timestamp.setText(String.format("Timestamp: %s", str_timestamp));
+                    status.setText(String.format("Status: %s", str_status));
                 }
             }
 
