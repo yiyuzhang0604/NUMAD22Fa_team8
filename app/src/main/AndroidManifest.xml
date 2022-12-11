@@ -64,16 +64,8 @@
             android:configChanges="orientation|screenSize"
             android:exported="false" />
 
-        <activity
-            android:name=".MeowFinder.HomeFragment"
-            android:configChanges="orientation|screenSize"
-            android:exported="false" />
-
-
-
-
         <service
-            android:name=".java.MyFirebaseMessagingService"
+            android:name=".MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
